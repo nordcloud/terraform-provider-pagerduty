@@ -35,10 +35,12 @@ func resourcePagerDutyServiceDependency() *schema.Resource {
 									"id": {
 										Type:     schema.TypeString,
 										Required: true,
+										ForceNew: true,
 									},
 									"type": {
 										Type:     schema.TypeString,
 										Required: true,
+										ForceNew: true,
 									},
 								},
 							},
@@ -52,10 +54,12 @@ func resourcePagerDutyServiceDependency() *schema.Resource {
 									"id": {
 										Type:     schema.TypeString,
 										Required: true,
+										ForceNew: true,
 									},
 									"type": {
 										Type:     schema.TypeString,
 										Required: true,
+										ForceNew: true,
 									},
 								},
 							},
