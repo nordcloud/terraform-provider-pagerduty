@@ -328,11 +328,9 @@ github.com/mitchellh/reflectwalk v1.0.1 h1:FVzMWA5RllMAKIdUSC8mdWo3XtwoecrH79BY7
 github.com/mitchellh/reflectwalk v1.0.1/go.mod h1:mSTlrgnPZtwu0c4WaC2kGObEpuNDbx0jmZXqmk4esnw=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e h1:fD57ERR4JtEqsWbfPhv4DMiApHyliiK5xCTNVSPiaAs=
 github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e/go.mod h1:zD1mROLANZcx1PVRCS0qkT7pwLkGfwJo4zjcN/Tysno=
-github.com/nordcloud/go-pagerduty v1.0.2 h1:mtwtnQYa3KsXbQFMFxnsI3isymUxS95E38JNNPoYB1I=
-github.com/nordcloud/go-pagerduty v1.0.2/go.mod h1:+X7DsceybbguTwV3CspD04jZ0J1nWTerdaoejRK7fAA=
-github.com/nordcloud/go-pagerduty v1.0.3 h1:HRVgj9jCGlznKQ0IYkV/wqDxFIwHasPfRqCsLjX3IkU=
-github.com/nordcloud/go-pagerduty v1.0.3/go.mod h1:+X7DsceybbguTwV3CspD04jZ0J1nWTerdaoejRK7fAA=
+github.com/nordcloud/go-pagerduty v1.0.4 h1:hsNDCIvHZt23ScZWTKsf+yX6Va2+9RvT7CEZoHJ2cAA=
 github.com/nordcloud/go-pagerduty v1.0.4/go.mod h1:+X7DsceybbguTwV3CspD04jZ0J1nWTerdaoejRK7fAA=
+github.com/nordcloud/go-pagerduty v1.1.0/go.mod h1:+X7DsceybbguTwV3CspD04jZ0J1nWTerdaoejRK7fAA=
 github.com/nsf/jsondiff v0.0.0-20200515183724-f29ed568f4ce/go.mod h1:uFMI8w+ref4v2r9jz+c9i1IfIttS/OkmLfrk1jne5hs=
 github.com/oklog/run v1.0.0 h1:Ru7dDtJNOyC66gQ5dQmaCa0qIsAUFY3sFpK1Xk8igrw=
 github.com/oklog/run v1.0.0/go.mod h1:dlhp/R75TPv97u0XWUtDeV/lRKWPKSdTuV0TZvrmrQA=
