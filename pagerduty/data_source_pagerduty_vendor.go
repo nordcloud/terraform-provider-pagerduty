@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/nordcloud/go-pagerduty/pagerduty"
 )
 
@@ -20,7 +20,6 @@ func dataSourcePagerDutyVendor() *schema.Resource {
 			"name_regex": {
 				Type:     schema.TypeString,
 				Optional: true,
-				Removed:  "Use `name` instead. This attribute will be removed in a future version",
 			},
 			"name": {
 				Type:     schema.TypeString,

@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hashicorp/terraform-plugin-sdk/helper/resource"
-	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/nordcloud/go-pagerduty/pagerduty"
 )
 
@@ -41,7 +41,9 @@ func resourcePagerDutyUserNotificationRule() *schema.Resource {
 			},
 			"contact_method": {
 				Required: true,
-				Type:     schema.TypeMap,
+				Type:     schema.TypeList,
+				MaxItems: 1,
+				MinItems: 1,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"id": {
@@ -173,7 +175,7 @@ func resourcePagerDutyUserNotificationRuleImport(d *schema.ResourceData, meta in
 }
 
 func expandContactMethod(v interface{}) *pagerduty.ContactMethodReference {
-	cm := v.(map[string]interface{})
+	cm := v.([]interface{})[0].(map[string]interface{})
 
 	var contactMethod = &pagerduty.ContactMethodReference{
 		ID:   cm["id"].(string),
@@ -183,12 +185,12 @@ func expandContactMethod(v interface{}) *pagerduty.ContactMethodReference {
 	return contactMethod
 }
 
-func flattenContactMethod(v *pagerduty.ContactMethodReference) map[string]interface{} {
+func flattenContactMethod(v *pagerduty.ContactMethodReference) []interface{} {
 
 	var contactMethod = map[string]interface{}{
 		"id":   v.ID,
 		"type": v.Type,
 	}
 
-	return contactMethod
+	return []interface{}{contactMethod}
 }
