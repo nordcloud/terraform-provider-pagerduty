@@ -40,7 +40,7 @@ func (c *Config) Client() (*pagerduty.Client, error) {
 	httpClient.Transport = logging.NewTransport("PagerDuty", http.DefaultTransport)
 
 	config := &pagerduty.Config{
-		Debug:      logging.IsDebugOrHigher(),
+		Debug:      true, // Temporarily forcefully enabled : logging.IsDebugOrHigher(),
 		HTTPClient: httpClient,
 		Token:      c.Token,
 		UserAgent:  c.UserAgent,
