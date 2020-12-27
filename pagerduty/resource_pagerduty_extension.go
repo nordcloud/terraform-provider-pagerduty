@@ -104,7 +104,7 @@ func resourcePagerDutyExtensionRead(d *schema.ResourceData, meta interface{}) er
 
 	log.Printf("[INFO] Reading PagerDuty extension %s", d.Id())
 
-	return resource.Retry(2*time.Minute, func() *resource.RetryError {
+	return resource.Retry(1*time.Minute, func() *resource.RetryError {
 		extension, _, err := client.Extensions.Get(d.Id())
 		if err != nil {
 			errResp := handleNotFoundError(err, d)

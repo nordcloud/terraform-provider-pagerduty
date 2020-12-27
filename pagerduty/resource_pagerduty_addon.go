@@ -63,7 +63,7 @@ func resourcePagerDutyAddonRead(d *schema.ResourceData, meta interface{}) error 
 
 	log.Printf("[INFO] Reading PagerDuty add-on %s", d.Id())
 
-	return resource.Retry(2*time.Minute, func() *resource.RetryError {
+	return resource.Retry(1*time.Minute, func() *resource.RetryError {
 		addon, _, err := client.Addons.Get(d.Id())
 		if err != nil {
 			errResp := handleNotFoundError(err, d)
