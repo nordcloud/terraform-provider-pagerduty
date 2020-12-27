@@ -39,10 +39,10 @@ func dataSourcePagerDutyTeamRead(d *schema.ResourceData, meta interface{}) error
 		Query: searchTeam,
 	}
 
-	return resource.Retry(1*time.Minute, func() *resource.RetryError {
+	return resource.Retry(3*time.Minute, func() *resource.RetryError {
 		resp, _, err := client.Teams.List(o)
 		if err != nil {
-			time.Sleep(2 * time.Second)
+			time.Sleep(10 * time.Second)
 			return resource.RetryableError(err)
 		}
 

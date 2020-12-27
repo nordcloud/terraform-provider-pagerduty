@@ -95,7 +95,7 @@ func buildBusinessServiceStruct(d *schema.ResourceData) (*pagerduty.BusinessServ
 func resourcePagerDutyBusinessServiceCreate(d *schema.ResourceData, meta interface{}) error {
 	client := meta.(*pagerduty.Client)
 
-	retryErr := resource.Retry(1*time.Minute, func() *resource.RetryError {
+	retryErr := resource.Retry(3*time.Minute, func() *resource.RetryError {
 
 		businessService, err := buildBusinessServiceStruct(d)
 		if err != nil {
@@ -110,7 +110,7 @@ func resourcePagerDutyBusinessServiceCreate(d *schema.ResourceData, meta interfa
 		return nil
 	})
 	if retryErr != nil {
-		time.Sleep(2 * time.Second)
+		time.Sleep(10 * time.Second)
 		return retryErr
 	}
 
@@ -122,7 +122,7 @@ func resourcePagerDutyBusinessServiceRead(d *schema.ResourceData, meta interface
 
 	log.Printf("[INFO] Reading PagerDuty business service %s", d.Id())
 
-	retryErr := resource.Retry(1*time.Minute, func() *resource.RetryError {
+	retryErr := resource.Retry(3*time.Minute, func() *resource.RetryError {
 		if businessService, _, err := client.BusinessServices.Get(d.Id()); err != nil {
 			return resource.RetryableError(err)
 		} else if businessService != nil {
@@ -141,7 +141,7 @@ func resourcePagerDutyBusinessServiceRead(d *schema.ResourceData, meta interface
 	})
 
 	if retryErr != nil {
-		time.Sleep(2 * time.Second)
+		time.Sleep(10 * time.Second)
 		return retryErr
 	}
 

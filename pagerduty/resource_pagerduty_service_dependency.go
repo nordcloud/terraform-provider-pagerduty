@@ -119,7 +119,7 @@ func resourcePagerDutyServiceDependencyAssociate(d *schema.ResourceData, meta in
 	log.Printf("[INFO] Associating PagerDuty dependency %s", serviceDependency.ID)
 
 	var dependencies *pagerduty.ListServiceDependencies
-	retryErr := resource.Retry(1*time.Minute, func() *resource.RetryError {
+	retryErr := resource.Retry(3*time.Minute, func() *resource.RetryError {
 		if dependencies, _, err = client.ServiceDependencies.AssociateServiceDependencies(&input); err != nil {
 			if isErrCode(err, 404) {
 				return resource.RetryableError(err)
@@ -133,7 +133,7 @@ func resourcePagerDutyServiceDependencyAssociate(d *schema.ResourceData, meta in
 		return nil
 	})
 	if retryErr != nil {
-		time.Sleep(2 * time.Second)
+		time.Sleep(10 * time.Second)
 		return retryErr
 	}
 	return resourcePagerDutyServiceDependencyRead(d, meta)
@@ -241,7 +241,7 @@ func findDependencySetState(depID, serviceID, serviceType string, d *schema.Reso
 
 	// Pausing to let the PD API sync.
 	time.Sleep(1 * time.Second)
-	retryErr := resource.Retry(1*time.Minute, func() *resource.RetryError {
+	retryErr := resource.Retry(3*time.Minute, func() *resource.RetryError {
 		if dependencies, _, err := client.ServiceDependencies.GetServiceDependenciesForType(serviceID, serviceType); err != nil {
 			if isErrCode(err, 404) || isErrCode(err, 500) {
 				return resource.RetryableError(err)
@@ -261,7 +261,7 @@ func findDependencySetState(depID, serviceID, serviceType string, d *schema.Reso
 		return nil
 	})
 	if retryErr != nil {
-		time.Sleep(2 * time.Second)
+		time.Sleep(10 * time.Second)
 		return retryErr
 	}
 

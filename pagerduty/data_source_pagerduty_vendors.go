@@ -40,7 +40,7 @@ func dataSourcePagerDutyVendorsRead(d *schema.ResourceData, meta interface{}) er
 	log.Printf("[INFO] Reading all PagerDuty vendors")
 
 	o := &pagerduty.ListVendorsOptions{}
-	return resource.Retry(1*time.Minute, func() *resource.RetryError {
+	return resource.Retry(3*time.Minute, func() *resource.RetryError {
 		resp, _, err := client.Vendors.List(o)
 		if err != nil {
 			time.Sleep(15 * time.Second)

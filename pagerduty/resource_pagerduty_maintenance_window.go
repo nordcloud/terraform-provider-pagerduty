@@ -84,12 +84,12 @@ func resourcePagerDutyMaintenanceWindowRead(d *schema.ResourceData, meta interfa
 
 	log.Printf("[INFO] Reading PagerDuty maintenance window %s", d.Id())
 
-	return resource.Retry(1*time.Minute, func() *resource.RetryError {
+	return resource.Retry(3*time.Minute, func() *resource.RetryError {
 		window, _, err := client.MaintenanceWindows.Get(d.Id())
 		if err != nil {
 			errResp := handleNotFoundError(err, d)
 			if errResp != nil {
-				time.Sleep(2 * time.Second)
+				time.Sleep(10 * time.Second)
 				return resource.RetryableError(errResp)
 			}
 

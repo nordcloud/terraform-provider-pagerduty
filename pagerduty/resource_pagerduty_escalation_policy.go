@@ -122,10 +122,10 @@ func resourcePagerDutyEscalationPolicyRead(d *schema.ResourceData, meta interfac
 
 	o := &pagerduty.GetEscalationPolicyOptions{}
 
-	return resource.Retry(1*time.Minute, func() *resource.RetryError {
+	return resource.Retry(3*time.Minute, func() *resource.RetryError {
 		escalationPolicy, _, err := client.EscalationPolicies.Get(d.Id(), o)
 		if err != nil {
-			time.Sleep(2 * time.Second)
+			time.Sleep(10 * time.Second)
 			return resource.RetryableError(err)
 		}
 
@@ -152,14 +152,14 @@ func resourcePagerDutyEscalationPolicyUpdate(d *schema.ResourceData, meta interf
 
 	log.Printf("[INFO] Updating PagerDuty escalation policy: %s", d.Id())
 
-	retryErr := resource.Retry(1*time.Minute, func() *resource.RetryError {
+	retryErr := resource.Retry(3*time.Minute, func() *resource.RetryError {
 		if _, _, err := client.EscalationPolicies.Update(d.Id(), escalationPolicy); err != nil {
 			return resource.RetryableError(err)
 		}
 		return nil
 	})
 	if retryErr != nil {
-		time.Sleep(2 * time.Second)
+		time.Sleep(10 * time.Second)
 		return retryErr
 	}
 

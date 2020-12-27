@@ -43,10 +43,10 @@ func dataSourcePagerDutyVendorRead(d *schema.ResourceData, meta interface{}) err
 	o := &pagerduty.ListVendorsOptions{
 		Query: searchName,
 	}
-	return resource.Retry(1*time.Minute, func() *resource.RetryError {
+	return resource.Retry(3*time.Minute, func() *resource.RetryError {
 		resp, _, err := client.Vendors.List(o)
 		if err != nil {
-			time.Sleep(2 * time.Second)
+			time.Sleep(10 * time.Second)
 			return resource.RetryableError(err)
 		}
 

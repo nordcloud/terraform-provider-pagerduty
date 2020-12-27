@@ -53,7 +53,7 @@ func resourcePagerDutyTeamMembershipCreate(d *schema.ResourceData, meta interfac
 
 	log.Printf("[DEBUG] Adding user: %s to team: %s with role: %s", userID, teamID, role)
 
-	retryErr := resource.Retry(1*time.Minute, func() *resource.RetryError {
+	retryErr := resource.Retry(3*time.Minute, func() *resource.RetryError {
 		if _, err := client.Teams.AddUserWithRole(teamID, userID, role); err != nil {
 			if isErrCode(err, 500) {
 				return resource.RetryableError(err)
@@ -80,12 +80,12 @@ func resourcePagerDutyTeamMembershipRead(d *schema.ResourceData, meta interface{
 
 	log.Printf("[DEBUG] Reading user: %s from team: %s", userID, teamID)
 
-	return resource.Retry(1*time.Minute, func() *resource.RetryError {
+	return resource.Retry(3*time.Minute, func() *resource.RetryError {
 		resp, _, err := client.Teams.GetMembers(teamID, &pagerduty.GetMembersOptions{})
 		if err != nil {
 			errResp := handleNotFoundError(err, d)
 			if errResp != nil {
-				time.Sleep(2 * time.Second)
+				time.Sleep(10 * time.Second)
 				return resource.RetryableError(errResp)
 			}
 
@@ -119,7 +119,7 @@ func resourcePagerDutyTeamMembershipUpdate(d *schema.ResourceData, meta interfac
 	log.Printf("[DEBUG] Updating user: %s to team: %s with role: %s", userID, teamID, role)
 
 	// To update existing membership resource, We can use the same API as creating a new membership.
-	retryErr := resource.Retry(1*time.Minute, func() *resource.RetryError {
+	retryErr := resource.Retry(3*time.Minute, func() *resource.RetryError {
 		if _, err := client.Teams.AddUserWithRole(teamID, userID, role); err != nil {
 			if isErrCode(err, 500) {
 				return resource.RetryableError(err)
@@ -147,7 +147,7 @@ func resourcePagerDutyTeamMembershipDelete(d *schema.ResourceData, meta interfac
 	log.Printf("[DEBUG] Removing user: %s from team: %s", userID, teamID)
 
 	// Retrying to give other resources (such as escalation policies) to delete
-	retryErr := resource.Retry(1*time.Minute, func() *resource.RetryError {
+	retryErr := resource.Retry(3*time.Minute, func() *resource.RetryError {
 		if _, err := client.Teams.RemoveUser(teamID, userID); err != nil {
 			if isErrCode(err, 400) {
 				return resource.RetryableError(err)
@@ -158,7 +158,7 @@ func resourcePagerDutyTeamMembershipDelete(d *schema.ResourceData, meta interfac
 		return nil
 	})
 	if retryErr != nil {
-		time.Sleep(2 * time.Second)
+		time.Sleep(10 * time.Second)
 		return retryErr
 	}
 

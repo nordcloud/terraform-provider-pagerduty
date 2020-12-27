@@ -115,10 +115,10 @@ func resourcePagerDutyServiceIntegrationCreate(d *schema.ResourceData, meta inte
 
 	service := d.Get("service").(string)
 
-	retryErr := resource.Retry(1*time.Minute, func() *resource.RetryError {
+	retryErr := resource.Retry(3*time.Minute, func() *resource.RetryError {
 		if serviceIntegration, _, err := client.Services.CreateIntegration(service, serviceIntegration); err != nil {
 			if isErrCode(err, 400) {
-				time.Sleep(2 * time.Second)
+				time.Sleep(10 * time.Second)
 				return resource.RetryableError(err)
 			}
 
@@ -145,13 +145,13 @@ func resourcePagerDutyServiceIntegrationRead(d *schema.ResourceData, meta interf
 
 	o := &pagerduty.GetIntegrationOptions{}
 
-	return resource.Retry(1*time.Minute, func() *resource.RetryError {
+	return resource.Retry(3*time.Minute, func() *resource.RetryError {
 		serviceIntegration, _, err := client.Services.GetIntegration(service, d.Id(), o)
 		if err != nil {
 			log.Printf("[WARN] Service integration read error")
 			errResp := handleNotFoundError(err, d)
 			if errResp != nil {
-				time.Sleep(2 * time.Second)
+				time.Sleep(10 * time.Second)
 				return resource.RetryableError(errResp)
 			}
 

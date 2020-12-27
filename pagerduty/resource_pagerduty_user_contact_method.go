@@ -114,12 +114,12 @@ func resourcePagerDutyUserContactMethodRead(d *schema.ResourceData, meta interfa
 
 	userID := d.Get("user_id").(string)
 
-	return resource.Retry(1*time.Minute, func() *resource.RetryError {
+	return resource.Retry(3*time.Minute, func() *resource.RetryError {
 		resp, _, err := client.Users.GetContactMethod(userID, d.Id())
 		if err != nil {
 			errResp := handleNotFoundError(err, d)
 			if errResp != nil {
-				time.Sleep(2 * time.Second)
+				time.Sleep(10 * time.Second)
 				return resource.RetryableError(errResp)
 			}
 
