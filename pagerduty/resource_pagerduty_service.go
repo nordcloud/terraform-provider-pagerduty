@@ -301,7 +301,7 @@ func resourcePagerDutyServiceRead(d *schema.ResourceData, meta interface{}) erro
 
 	log.Printf("[INFO] Reading PagerDuty service %s", d.Id())
 
-	return resource.Retry(2*time.Minute, func() *resource.RetryError {
+	return resource.Retry(1*time.Minute, func() *resource.RetryError {
 		service, _, err := client.Services.Get(d.Id(), &pagerduty.GetServiceOptions{})
 		if err != nil {
 			log.Printf("[WARN] Service read error")
