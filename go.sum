@@ -336,6 +336,8 @@ github.com/nordcloud/go-pagerduty v1.1.1/go.mod h1:+X7DsceybbguTwV3CspD04jZ0J1nW
 github.com/nordcloud/go-pagerduty v1.1.3/go.mod h1:+X7DsceybbguTwV3CspD04jZ0J1nWTerdaoejRK7fAA=
 github.com/nordcloud/go-pagerduty v1.1.4 h1:ns58sT34vDpUPAraOQqr249TOS7e6nQdUHjXLiW/9zQ=
 github.com/nordcloud/go-pagerduty v1.1.4/go.mod h1:+X7DsceybbguTwV3CspD04jZ0J1nWTerdaoejRK7fAA=
+github.com/nordcloud/go-pagerduty v1.1.5 h1:YHhkTL8/bceVXn4TacZcsPNSrepGb5px7bCqK9qOnUI=
+github.com/nordcloud/go-pagerduty v1.1.5/go.mod h1:+X7DsceybbguTwV3CspD04jZ0J1nWTerdaoejRK7fAA=
 github.com/nsf/jsondiff v0.0.0-20200515183724-f29ed568f4ce/go.mod h1:uFMI8w+ref4v2r9jz+c9i1IfIttS/OkmLfrk1jne5hs=
 github.com/oklog/run v1.0.0 h1:Ru7dDtJNOyC66gQ5dQmaCa0qIsAUFY3sFpK1Xk8igrw=
 github.com/oklog/run v1.0.0/go.mod h1:dlhp/R75TPv97u0XWUtDeV/lRKWPKSdTuV0TZvrmrQA=
