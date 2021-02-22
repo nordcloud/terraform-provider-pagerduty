@@ -30,7 +30,12 @@ func dataSourcePagerDutyRulesetRead(d *schema.ResourceData, meta interface{}) er
 
 	resp, _, err := client.Rulesets.List()
 	if err != nil {
-		return err
+		errResp := handleNotFoundError(err, d)
+		if errResp != nil {
+			return errResp
+		}
+
+		return nil
 	}
 
 	var found *pagerduty.Ruleset

@@ -1,6 +1,7 @@
 package pagerduty
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"runtime"
@@ -76,9 +77,21 @@ func Provider() *schema.Provider {
 }
 
 func isErrCode(err error, code int) bool {
+	if e, ok := errors.Unwrap(err).(*pagerduty.Error); ok {
+		log.Printf("[INFO] Unwrapped error: %s", e.Error())
+
+		if e.ErrorResponse.Response.StatusCode == code {
+			log.Printf("[INFO] Unwrapped error code matches expected %d", code)
+			return true
+		}
+		log.Printf("[INFO] Unwrapped error code doesn't match expected %d", code)
+	}
+
 	if e, ok := err.(*pagerduty.Error); ok && e.ErrorResponse.Response.StatusCode == code {
+		log.Printf("[INFO] Error code matches expected %d", code)
 		return true
 	}
+	log.Printf("[INFO] Error code doesn't match expected %d", code)
 
 	return false
 }

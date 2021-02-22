@@ -39,8 +39,13 @@ func dataSourcePagerDutyEscalationPoliciesRead(d *schema.ResourceData, meta inte
 	return resource.Retry(3*time.Minute, func() *resource.RetryError {
 		resp, _, err := client.EscalationPolicies.List(o)
 		if err != nil {
-			time.Sleep(15 * time.Second)
-			return resource.RetryableError(err)
+			errResp := handleNotFoundError(err, d)
+			if errResp != nil {
+				time.Sleep(15 * time.Second)
+				return resource.RetryableError(errResp)
+			}
+
+			return nil
 		}
 
 		var ids []string

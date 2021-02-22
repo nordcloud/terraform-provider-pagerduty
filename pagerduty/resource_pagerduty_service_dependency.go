@@ -195,7 +195,12 @@ func resourcePagerDutyServiceDependencyRead(d *schema.ResourceData, meta interfa
 	log.Printf("[INFO] Reading PagerDuty dependency %s", serviceDependency.ID)
 
 	if err = findDependencySetState(d.Id(), serviceDependency.DependentService.ID, serviceDependency.DependentService.Type, d, meta); err != nil {
-		return err
+		errResp := handleNotFoundError(err, d)
+		if errResp != nil {
+			return errResp
+		}
+
+		return nil
 	}
 
 	return nil

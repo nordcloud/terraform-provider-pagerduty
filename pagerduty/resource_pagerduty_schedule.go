@@ -170,8 +170,13 @@ func resourcePagerDutyScheduleRead(d *schema.ResourceData, meta interface{}) err
 
 	retryErr := resource.Retry(3*time.Minute, func() *resource.RetryError {
 		if schedule, _, err := client.Schedules.Get(d.Id(), &pagerduty.GetScheduleOptions{}); err != nil {
-			time.Sleep(10 * time.Second)
-			return resource.RetryableError(err)
+			errResp := handleNotFoundError(err, d)
+			if errResp != nil {
+				time.Sleep(10 * time.Second)
+				return resource.RetryableError(errResp)
+			}
+
+			return nil
 		} else if schedule != nil {
 			d.Set("name", schedule.Name)
 			d.Set("time_zone", schedule.TimeZone)

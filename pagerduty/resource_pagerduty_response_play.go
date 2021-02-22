@@ -259,8 +259,13 @@ func resourcePagerDutyResponsePlayRead(d *schema.ResourceData, meta interface{})
 
 	return resource.Retry(3*time.Minute, func() *resource.RetryError {
 		if responsePlay, _, err := client.ResponsePlays.Get(d.Id(), from); err != nil {
-			time.Sleep(10 * time.Second)
-			return resource.RetryableError(err)
+			errResp := handleNotFoundError(err, d)
+			if errResp != nil {
+				time.Sleep(10 * time.Second)
+				return resource.RetryableError(errResp)
+			}
+
+			return nil
 		} else if responsePlay != nil {
 			if responsePlay.Team != nil {
 				d.Set("team", []interface{}{responsePlay.Team})

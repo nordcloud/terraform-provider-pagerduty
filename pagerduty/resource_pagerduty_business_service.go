@@ -124,7 +124,12 @@ func resourcePagerDutyBusinessServiceRead(d *schema.ResourceData, meta interface
 
 	retryErr := resource.Retry(3*time.Minute, func() *resource.RetryError {
 		if businessService, _, err := client.BusinessServices.Get(d.Id()); err != nil {
-			return resource.RetryableError(err)
+			errResp := handleNotFoundError(err, d)
+			if errResp != nil {
+				return resource.RetryableError(errResp)
+			}
+
+			return nil
 		} else if businessService != nil {
 			d.Set("name", businessService.Name)
 			d.Set("html_url", businessService.HTMLUrl)

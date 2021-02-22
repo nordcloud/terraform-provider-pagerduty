@@ -86,8 +86,13 @@ func resourcePagerDutyEventRuleRead(d *schema.ResourceData, meta interface{}) er
 	return resource.Retry(3*time.Minute, func() *resource.RetryError {
 		resp, _, err := client.EventRules.List()
 		if err != nil {
-			time.Sleep(10 * time.Second)
-			return resource.RetryableError(err)
+			errResp := handleNotFoundError(err, d)
+			if errResp != nil {
+				time.Sleep(10 * time.Second)
+				return resource.RetryableError(errResp)
+			}
+
+			return nil
 		}
 		var foundRule *pagerduty.EventRule
 

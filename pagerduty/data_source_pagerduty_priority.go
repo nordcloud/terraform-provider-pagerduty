@@ -36,7 +36,12 @@ func dataSourcePagerDutyPriorityRead(d *schema.ResourceData, meta interface{}) e
 
 	resp, _, err := client.Priorities.List()
 	if err != nil {
-		return err
+		errResp := handleNotFoundError(err, d)
+		if errResp != nil {
+			return errResp
+		}
+
+		return nil
 	}
 
 	var found *pagerduty.Priority

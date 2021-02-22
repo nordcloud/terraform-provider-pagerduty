@@ -73,8 +73,13 @@ func resourcePagerDutyTeamRead(d *schema.ResourceData, meta interface{}) error {
 
 	return resource.Retry(3*time.Minute, func() *resource.RetryError {
 		if team, _, err := client.Teams.Get(d.Id()); err != nil {
-			time.Sleep(10 * time.Second)
-			return resource.RetryableError(err)
+			errResp := handleNotFoundError(err, d)
+			if errResp != nil {
+				time.Sleep(10 * time.Second)
+				return resource.RetryableError(errResp)
+			}
+
+			return nil
 		} else if team != nil {
 			d.Set("name", team.Name)
 			d.Set("description", team.Description)

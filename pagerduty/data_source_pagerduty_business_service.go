@@ -30,7 +30,12 @@ func dataSourcePagerDutyBusinessServiceRead(d *schema.ResourceData, meta interfa
 
 	resp, _, err := client.BusinessServices.List()
 	if err != nil {
-		return err
+		errResp := handleNotFoundError(err, d)
+		if errResp != nil {
+			return errResp
+		}
+
+		return nil
 	}
 
 	var found *pagerduty.BusinessService

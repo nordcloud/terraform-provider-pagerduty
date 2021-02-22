@@ -46,8 +46,13 @@ func dataSourcePagerDutyVendorRead(d *schema.ResourceData, meta interface{}) err
 	return resource.Retry(3*time.Minute, func() *resource.RetryError {
 		resp, _, err := client.Vendors.List(o)
 		if err != nil {
-			time.Sleep(10 * time.Second)
-			return resource.RetryableError(err)
+			errResp := handleNotFoundError(err, d)
+			if errResp != nil {
+				time.Sleep(10 * time.Second)
+				return resource.RetryableError(errResp)
+			}
+
+			return nil
 		}
 
 		var found *pagerduty.Vendor

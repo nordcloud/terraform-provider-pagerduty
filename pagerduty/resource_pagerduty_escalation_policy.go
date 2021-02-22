@@ -126,7 +126,12 @@ func resourcePagerDutyEscalationPolicyRead(d *schema.ResourceData, meta interfac
 		escalationPolicy, _, err := client.EscalationPolicies.Get(d.Id(), o)
 		if err != nil {
 			time.Sleep(10 * time.Second)
-			return resource.RetryableError(err)
+			errResp := handleNotFoundError(err, d)
+			if errResp != nil {
+				return resource.RetryableError(errResp)
+			}
+
+			return nil
 		}
 
 		d.Set("name", escalationPolicy.Name)
