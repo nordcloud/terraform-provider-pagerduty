@@ -1,3 +1,48 @@
+## 1.9.5 (March 11, 2021)
+BUG FIXES:
+* `data_source_pagerduty_ruleset`: Fixed bug by adding `routing_keys` to data source schema ([#312](https://github.com/PagerDuty/terraform-provider-pagerduty/pull/312))
+
+IMPROVEMENTS:
+* `resource/pagerduty_escalation_policy`: Add retry logic to escalation policy delete ([#309](https://github.com/PagerDuty/terraform-provider-pagerduty/pull/309))
+* `resource/pagerduty_user`: Trimmed leading and trailing spaces on the value for `name` field to match behavior of PagerDuty API ([#312](https://github.com/PagerDuty/terraform-provider-pagerduty/pull/312))
+
+FEATURES:
+* `resource/pagerduty_ruleset_rule` and `resource/pagerduty_service_event_rule`: Add `template` field to the rule object([#314](https://github.com/PagerDuty/terraform-provider-pagerduty/pull/314))
+
+
+## 1.9.4 (February 26, 2021)
+BUG FIXES:
+* `resource/pagerduty_team_membership`: Fixed issue with importing team members to teams with more than 100 users ([#305](https://github.com/PagerDuty/terraform-provider-pagerduty/pull/305))
+
+IMPROVEMENTS:
+* `data_source_pagerduty_ruleset`: Added `routing_keys` field to the `ruleset` object ([#305](https://github.com/PagerDuty/terraform-provider-pagerduty/pull/305))
+## 1.9.4 (February 26, 2021)
+BUG FIXES:
+* `resource/pagerduty_team_membership`: Fixed issue with importing team members to teams with more than 100 users ([#305](https://github.com/PagerDuty/terraform-provider-pagerduty/pull/305))
+
+IMPROVEMENTS:
+* `data_source_pagerduty_ruleset`: Added `routing_keys` field to the `ruleset` object ([#305](https://github.com/PagerDuty/terraform-provider-pagerduty/pull/305))
+
+## 1.9.3 (February 11, 2021)
+BUG FIXES: 
+* `resource/pagerduty_service_event_rule`,`resource/pagerduty_ruleset_rule`: Fixed Bug with Event Rule Suppress Action ([#302](https://github.com/PagerDuty/terraform-provider-pagerduty/pull/302))
+
+## 1.9.2 (February 10, 2021)
+BUG FIXES: 
+* `resource/pagerduty_service_event_rule`,`resource/pagerduty_ruleset_rule`: Fixed Bug with Event Rule Positioning ([#301](https://github.com/PagerDuty/terraform-provider-pagerduty/pull/301))
+
+## 1.9.1 (February 8, 2021)
+FEATURES:
+* `resource/pagerduty_service_event_rule`: Add service event rule resource ([#296](https://github.com/PagerDuty/terraform-provider-pagerduty/pull/296))
+
+IMPROVEMENTS:
+* `resource/resource_pagerduty_user`: Add retry logic to user update error ([#286](https://github.com/PagerDuty/terraform-provider-pagerduty/pull/286))
+* `data_source_pagerduty_busines_service`, `data_source_pagerduty_escalation_policy`, `data_source_pagerduty_extension_schema`, `data_source_pagerduty_priority`, `data_source_pagerduty_ruleset`, `data_source_pagerduty_schedule`, `data_source_pagerduty_service`, `data_source_pagerduty_team`, `data_source_pagerduty_user`, `data_source_pagerduty_vendor`: Add retry logic on error ([#287](https://github.com/PagerDuty/terraform-provider-pagerduty/pull/287))
+* `resource/pagerduty_ruleset_rule`: Add `suspend` and `variables` fields ([#296](https://github.com/PagerDuty/terraform-provider-pagerduty/pull/296))
+
+BUG FIXES:
+* `resource/pagerduty_ruleset_rule`: Fixed bug where `position` wasn't setting properly. Add retry to allow for `position` to be correctly set before apply is complete ([#296](https://github.com/PagerDuty/terraform-provider-pagerduty/pull/296))
+
 ## 1.8.0 (November 30, 2020)
 FEATURES:
 * `resource/resource_pagerduty_response_play` Add response play resource ([#278](https://github.com/PagerDuty/terraform-provider-pagerduty/pull/278))

@@ -3,7 +3,9 @@ package pagerduty
 import (
 	"fmt"
 	"log"
+	"time"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/nordcloud/go-pagerduty/pagerduty"
 )
@@ -28,31 +30,38 @@ func dataSourcePagerDutyBusinessServiceRead(d *schema.ResourceData, meta interfa
 
 	searchName := d.Get("name").(string)
 
-	resp, _, err := client.BusinessServices.List()
-	if err != nil {
-		errResp := handleNotFoundError(err, d)
-		if errResp != nil {
-			return errResp
+	return resource.Retry(2*time.Minute, func() *resource.RetryError {
+		resp, _, err := client.BusinessServices.List()
+		if err != nil {
+			if isErrCode(err, 429) {
+				// Delaying retry by 30s as recommended by PagerDuty
+				// https://developer.pagerduty.com/docs/rest-api-v2/rate-limiting/#what-are-possible-workarounds-to-the-events-api-rate-limit
+				time.Sleep(30 * time.Second)
+				return resource.RetryableError(err)
+			}
+
+			return resource.NonRetryableError(err)
 		}
+
+		var found *pagerduty.BusinessService
+
+		for _, businessService := range resp.BusinessServices {
+			if businessService.Name == searchName {
+				found = businessService
+				break
+			}
+		}
+
+		if found == nil {
+			return resource.NonRetryableError(
+				fmt.Errorf("Unable to locate any business service with the name: %s", searchName),
+			)
+		}
+
+		d.SetId(found.ID)
+		d.Set("name", found.Name)
 
 		return nil
-	}
+	})
 
-	var found *pagerduty.BusinessService
-
-	for _, businessService := range resp.BusinessServices {
-		if businessService.Name == searchName {
-			found = businessService
-			break
-		}
-	}
-
-	if found == nil {
-		return fmt.Errorf("Unable to locate any business service with the name: %s", searchName)
-	}
-
-	d.SetId(found.ID)
-	d.Set("name", found.Name)
-
-	return nil
 }

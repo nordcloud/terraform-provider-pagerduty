@@ -42,13 +42,14 @@ func dataSourcePagerDutyTeamRead(d *schema.ResourceData, meta interface{}) error
 	return resource.Retry(3*time.Minute, func() *resource.RetryError {
 		resp, _, err := client.Teams.List(o)
 		if err != nil {
-			errResp := handleNotFoundError(err, d)
-			if errResp != nil {
-				time.Sleep(10 * time.Second)
-				return resource.RetryableError(errResp)
+			if isErrCode(err, 429) {
+				// Delaying retry by 30s as recommended by PagerDuty
+				// https://developer.pagerduty.com/docs/rest-api-v2/rate-limiting/#what-are-possible-workarounds-to-the-events-api-rate-limit
+				time.Sleep(30 * time.Second)
+				return resource.RetryableError(err)
 			}
 
-			return nil
+			return resource.NonRetryableError(err)
 		}
 
 		var found *pagerduty.Team

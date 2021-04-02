@@ -3,6 +3,7 @@ package pagerduty
 import (
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
@@ -23,11 +24,14 @@ func resourcePagerDutyUser() *schema.Resource {
 			"name": {
 				Type:     schema.TypeString,
 				Required: true,
+				// Suppress the diff shown if there are leading or trailing spaces
+				DiffSuppressFunc: suppressLeadTrailSpaceDiff,
 			},
 
 			"email": {
-				Type:     schema.TypeString,
-				Required: true,
+				Type:             schema.TypeString,
+				Required:         true,
+				DiffSuppressFunc: suppressCaseDiff,
 			},
 
 			"color": {
@@ -90,7 +94,7 @@ func resourcePagerDutyUser() *schema.Resource {
 
 func buildUserStruct(d *schema.ResourceData) *pagerduty.User {
 	user := &pagerduty.User{
-		Name:  d.Get("name").(string),
+		Name:  strings.TrimSpace(d.Get("name").(string)),
 		Email: d.Get("email").(string),
 	}
 
@@ -113,7 +117,7 @@ func buildUserStruct(d *schema.ResourceData) *pagerduty.User {
 	if attr, ok := d.GetOk("description"); ok {
 		user.Description = attr.(string)
 	}
-
+	log.Printf("[DEBUG] buildUserStruct-- d: .%v. user:%v.", d.Get("name").(string), user.Name)
 	return user
 }
 
@@ -150,7 +154,7 @@ func resourcePagerDutyUserRead(d *schema.ResourceData, meta interface{}) error {
 
 			return nil
 		}
-
+		// Trimming whitespace on names in case of mistyped spaces
 		d.Set("name", user.Name)
 		d.Set("email", user.Email)
 		d.Set("time_zone", user.TimeZone)
@@ -180,8 +184,20 @@ func resourcePagerDutyUserUpdate(d *schema.ResourceData, meta interface{}) error
 
 	log.Printf("[INFO] Updating PagerDuty user %s", d.Id())
 
-	if _, _, err := client.Users.Update(d.Id(), user); err != nil {
-		return err
+	// Retrying to give other resources (such as escalation policies) to delete
+	retryErr := resource.Retry(2*time.Minute, func() *resource.RetryError {
+		if _, _, err := client.Users.Update(d.Id(), user); err != nil {
+			if isErrCode(err, 400) {
+				return resource.RetryableError(err)
+			}
+
+			return resource.NonRetryableError(err)
+		}
+		return nil
+	})
+	if retryErr != nil {
+		time.Sleep(2 * time.Second)
+		return retryErr
 	}
 
 	if d.HasChange("teams") {

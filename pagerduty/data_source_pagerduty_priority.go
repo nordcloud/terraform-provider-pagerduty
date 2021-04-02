@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"time"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/resource"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/nordcloud/go-pagerduty/pagerduty"
 )
@@ -34,32 +36,38 @@ func dataSourcePagerDutyPriorityRead(d *schema.ResourceData, meta interface{}) e
 
 	searchTeam := d.Get("name").(string)
 
-	resp, _, err := client.Priorities.List()
-	if err != nil {
-		errResp := handleNotFoundError(err, d)
-		if errResp != nil {
-			return errResp
+	return resource.Retry(2*time.Minute, func() *resource.RetryError {
+		resp, _, err := client.Priorities.List()
+		if err != nil {
+			if isErrCode(err, 429) {
+				// Delaying retry by 30s as recommended by PagerDuty
+				// https://developer.pagerduty.com/docs/rest-api-v2/rate-limiting/#what-are-possible-workarounds-to-the-events-api-rate-limit
+				time.Sleep(30 * time.Second)
+				return resource.RetryableError(err)
+			}
+
+			return resource.NonRetryableError(err)
 		}
+
+		var found *pagerduty.Priority
+
+		for _, priority := range resp.Priorities {
+			if strings.EqualFold(priority.Name, searchTeam) {
+				found = priority
+				break
+			}
+		}
+
+		if found == nil {
+			return resource.NonRetryableError(
+				fmt.Errorf("Unable to locate any priority with name: %s", searchTeam),
+			)
+		}
+
+		d.SetId(found.ID)
+		d.Set("name", found.Name)
+		d.Set("description", found.Description)
 
 		return nil
-	}
-
-	var found *pagerduty.Priority
-
-	for _, priority := range resp.Priorities {
-		if strings.EqualFold(priority.Name, searchTeam) {
-			found = priority
-			break
-		}
-	}
-
-	if found == nil {
-		return fmt.Errorf("Unable to locate any priority with name: %s", searchTeam)
-	}
-
-	d.SetId(found.ID)
-	d.Set("name", found.Name)
-	d.Set("description", found.Description)
-
-	return nil
+	})
 }
